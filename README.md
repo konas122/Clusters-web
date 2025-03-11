@@ -1,3 +1,3 @@
-# Nanite on Web
+# The Clusters of Nanite on Web
 
-Reproducing UE5's **nanite** with **three.js**.
+Reproducing Clusters, a part of UE5's **nanite** with **three.js**.
