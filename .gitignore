@@ -1,0 +1,13 @@
+.DS_Store
+
+.vs
+.idea
+.vscode
+
+node_modules
+research
+tmp
+dist/data/
+src-bak*
+yarn-error.log
+yarn.lock

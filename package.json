@@ -1,0 +1,19 @@
+{
+    "name": "clusters-web",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "scripts": {
+      "dev": "esbuild src/index.ts --bundle --loader:.glsl=text --loader:.ply=file --loader:.obj=file --outfile=dist/three-nanite.js --target=es2020 --format=esm --watch",
+      "serve": "serve -s dist"
+    },
+    "devDependencies": {
+      "esbuild": "^0.15.7",
+      "typescript": "^4.8.3",
+      "serve": "^14.2.4"
+    },
+    "dependencies": {
+      "@types/three": "^0.163.0",
+      "three": "^0.163.0"
+    }
+}
