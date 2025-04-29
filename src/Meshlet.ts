@@ -190,7 +190,7 @@ export class Meshlet {
     public getEdgeHash(edge: Edge): string {
 
         function hashVertex(vertex: Vertex): string {
-            return `${vertex.x},${vertex.y},${vertex.z}`;
+            return `${vertex.x},${vertex.y},${vertex.z}`
         }
 
         const edgeVertices = this.getEdgeVertices(edge)

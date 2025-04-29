@@ -102,7 +102,6 @@ export class MeshletObject3D {
                 vertexTexture: {
                     value: vertexTexture
                 },
-
                 verticesTextureSize: {
                     value: MeshletObject3D.VERTICES_TEXTURE_SIZE
                 },
@@ -191,12 +190,20 @@ export class MeshletObject3D {
         return visible
     }
 
-    private traverseMeshlets(meshlet: Meshlet, fn: (meshlet: Meshlet) => boolean, visited: {[key: string]: boolean} = {}) {
-        if (visited[meshlet.id] === true) return
+    private traverseMeshlets(
+        meshlet: Meshlet,
+        fn: (meshlet: Meshlet) => boolean,
+        visited: { [key: string]: boolean } = {}
+    ) {
+        if (visited[meshlet.id] === true) {
+            return
+        }
 
         visited[meshlet.id] = true
         const shouldContinue = fn(meshlet)
-        if (!shouldContinue) return
+        if (!shouldContinue) {
+            return
+        }
 
         for (let child of meshlet.parents) {
             this.traverseMeshlets(child, fn, visited)
@@ -275,7 +282,7 @@ export class MeshletObject3D {
                         this.localPositionAttribute.array[j + 0] = meshletMatrix.elements[12]
                         this.localPositionAttribute.array[j + 1] = meshletMatrix.elements[13]
                         this.localPositionAttribute.array[j + 2] = meshletMatrix.elements[14]
-    
+
                         j += 3
                         i++
                     }

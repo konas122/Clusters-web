@@ -20,7 +20,7 @@ export class METISWrapper {
             function assert(condition: boolean) {
                 if (!condition) throw Error("assert")
             }
-            
+
             let xadj: number[] = [0]
             let adjncy: number[] = []
 
