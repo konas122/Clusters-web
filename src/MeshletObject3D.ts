@@ -155,7 +155,7 @@ export class MeshletObject3D {
         const completeProj = this.tempMatrix.multiplyMatrices(cameraMatrixWorld, meshletMatrixWorld)
 
         const projectedBounds = this.sphereApplyMatrix4(
-            meshlet.boundingVolume.center, 
+            meshlet.center, 
             Math.max(meshlet.clusterError, 10e-10),
             completeProj
         )
@@ -165,12 +165,12 @@ export class MeshletObject3D {
             projectedBounds.radius, screenHeight
         )
 
-        if (!meshlet.parentBoundingVolume) {
+        if (!meshlet.parentCenter) {
             console.log(meshlet)
         }
 
         const parentProjectedBounds = this.sphereApplyMatrix4(
-            meshlet.parentBoundingVolume.center, 
+            meshlet.parentCenter, 
             Math.max(meshlet.parentError, 10e-10),
             completeProj
         )

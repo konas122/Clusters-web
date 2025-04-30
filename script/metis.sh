@@ -1,6 +1,10 @@
 #!/bin/bash
 
-emcc -o metis.js -O3 -s WASM=1 \
+cd "$(dirname "$0")"
+cd ../third-party/metis
+
+emcc -O3 \
+    -s WASM=1 \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	-s MODULARIZE=1 \
 	-s EXPORT_ES6=1 \
@@ -9,7 +13,6 @@ emcc -o metis.js -O3 -s WASM=1 \
 	-s EXPORTED_FUNCTIONS='["_malloc","_METIS_PartGraphKway"]' \
 	-I include \
 	-I libmetis \
-	-I GKlib \
-    ./{GKlib,libmetis}/*.c
-
-cp ./metis.wasm ../../dist/
+	-I ../GKlib \
+    ./{../GKlib,libmetis}/*.c \
+    -o ../../build/metis.js

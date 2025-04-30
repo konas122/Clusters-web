@@ -56,12 +56,6 @@ export class Triangle {
     }
 }
 
-export interface BoundingVolume {
-    AABB: {min: Vertex, max: Vertex}
-    center: Vertex
-    radius: number
-} 
-
 export class Edge {
     public fromIndex: number
     public toIndex: number
@@ -99,8 +93,8 @@ export class Meshlet {
     public children: Meshlet[]
     public parents: Meshlet[]
 
-    public boundingVolume: BoundingVolume
-    public parentBoundingVolume: BoundingVolume
+    public center: Vertex
+    public parentCenter: Vertex
     public parentError: number = Infinity
     public clusterError: number = 0
 
@@ -115,7 +109,7 @@ export class Meshlet {
 
         this.id = Math.floor(seedRandom() * 10000000)
 
-        this.boundingVolume = this.computeBoundingSphere(this.vertices)
+        this.center = this.computeBoundingSphere(this.vertices)
 
         this.lod = 0
         this.children = []
@@ -201,7 +195,7 @@ export class Meshlet {
         return edgeHash
     }
 
-    private computeBoundingSphere(vertices: Vertex[]): BoundingVolume {
+    private computeBoundingSphere(vertices: Vertex[]): Vertex {
         let maxX = -Infinity; let maxY = -Infinity; let maxZ = -Infinity
         let minX = Infinity; let minY = Infinity; let minZ = Infinity
 
@@ -217,14 +211,11 @@ export class Meshlet {
 
         }
 
-        return {
-            AABB: {
-                min: new Vertex(minX, minY, minZ),
-                max: new Vertex(maxX, maxY, maxZ),
-            },
-            center: new Vertex(minX + (maxX-minX)/2, minY + (maxY-minY)/2, minZ + (maxZ-minZ)/2),
-            radius: Math.max((maxX-minX)/2,(maxY-minY)/2,(maxZ-minZ)/2)
-        }
+        return new Vertex(
+            minX + (maxX - minX) / 2,
+            minY + (maxY - minY) / 2,
+            minZ + (maxZ - minZ) / 2
+        )
     }
 
     public clone(): Meshlet {

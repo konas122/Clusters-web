@@ -1,7 +1,5 @@
 import * as THREE from "three"
 
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
-
 import { BetterStats, Stat } from "./BetterStats"
 
 import { OBJLoaderIndexed } from "./OBJLoaderIndexed"
@@ -9,16 +7,16 @@ import { MeshletMerger } from "./MeshletMerger"
 
 import { MeshletSimplifier_wasm } from "./util/MeshletSimplifier"
 import { MeshletCleaner } from "./util/MeshletCleaner"
-import { BoundingVolume, Meshlet } from "./Meshlet"
+import { Vertex, Meshlet } from "./Meshlet"
 import { MeshletCreator } from "./util/MeshletCreator"
 import { MeshletGrouper } from "./MeshletGrouper"
 import { MeshSimplifyScale } from "./util/MeshSimplifyScale"
-
-
-import Stats from "three/examples/jsm/libs/stats.module.js"
-import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js"
-
 import { MeshletObject3D } from "./MeshletObject3D"
+
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
+import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js"
+import Stats from "three/examples/jsm/libs/stats.module.js"
+
 
 export class App {
     private canvas: HTMLCanvasElement
@@ -133,7 +131,7 @@ export class App {
             const DEBUG = false
 
             async function appendMeshlets(
-                simplifiedGroup: Meshlet, bounds: BoundingVolume, error: number
+                simplifiedGroup: Meshlet, center: Vertex, error: number
             ) : Promise<Meshlet[]>
             {
                 const split = await MeshletCreator.build(
@@ -141,7 +139,7 @@ export class App {
                 )
                 for (let s of split) {
                     s.clusterError = error
-                    s.boundingVolume = bounds
+                    s.center = center
                 }
                 return split
             }
@@ -198,11 +196,11 @@ export class App {
                         }
 
                         previousMeshlet.parentError = meshSpaceError
-                        previousMeshlet.parentBoundingVolume = simplified.meshlet.boundingVolume
+                        previousMeshlet.parentCenter = simplified.meshlet.center
                     }
 
                     const out = await appendMeshlets(
-                        simplified.meshlet, simplified.meshlet.boundingVolume, meshSpaceError
+                        simplified.meshlet, simplified.meshlet.center, meshSpaceError
                     )
 
                     for (let o of out) {
@@ -251,7 +249,7 @@ export class App {
                     console.log("WE are done at lod", lod)
                     rootMeshlet = outputs[0]
                     rootMeshlet.lod = lod + 1
-                    rootMeshlet.parentBoundingVolume = rootMeshlet.boundingVolume
+                    rootMeshlet.parentCenter = rootMeshlet.center
                     break
                 }
 
