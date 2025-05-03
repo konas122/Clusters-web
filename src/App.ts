@@ -1,5 +1,6 @@
 import * as THREE from "three"
 
+import { Config } from "./config"
 import { BetterStats, Stat } from "./BetterStats"
 
 import { OBJLoaderIndexed } from "./OBJLoaderIndexed"
@@ -16,7 +17,6 @@ import { MeshletObject3D } from "./MeshletObject3D"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js"
 import Stats from "three/examples/jsm/libs/stats.module.js"
-
 
 export class App {
     private canvas: HTMLCanvasElement
@@ -57,6 +57,22 @@ export class App {
         this.stats.addStat(this.lodStat)
 
         this.gui = new GUI()
+
+        this.gui.add(Config.get(), 'DEBUG')
+            .onChange((value: boolean) => {
+                Config.get().DEBUG = value
+                location.reload()
+            })
+        this.gui.add(Config.get(), 'Layout', ['x', 'xx', 'xxx'])
+            .onChange((value: string) => {
+                Config.get().Layout = value
+                location.reload()
+            })
+        this.gui.add(Config.get(), 'Model', ['Dragon', 'Bunny', 'Teapot', 'Armadillo'])
+            .onChange((value: string) => {
+                Config.get().Model = value
+                location.reload()
+            })
 
         this.render()
     }
@@ -128,12 +144,11 @@ export class App {
             // Original mesh
             const xO = 0.3
             const yO = -0.3
-            const DEBUG = false
+            const DEBUG = Config.get().DEBUG
 
             async function appendMeshlets(
                 simplifiedGroup: Meshlet, center: Vertex, error: number
-            ) : Promise<Meshlet[]>
-            {
+            ): Promise<Meshlet[]> {
                 const split = await MeshletCreator.build(
                     simplifiedGroup.vertices_raw, simplifiedGroup.indices_raw, 255, 128
                 )
@@ -287,10 +302,34 @@ export class App {
             const m = new MeshletObject3D(allMeshlets, this.lodStat)
             this.scene.add(m.mesh)
 
-            for (let x = 0; x < 20; x++) {
-                for (let y = 0; y < 20; y++) {
-                    m.addMeshletAtPosition(new THREE.Vector3(x, 0, y))
-                }
+            switch (Config.getLayout()) {
+                case 'x':
+                    for (let x = 0; x < 20; x++) {
+                        for (let y = 0; y < 20; y++) {
+                            m.addMeshletAtPosition(new THREE.Vector3(x, 0, y))
+                        }
+                    }
+
+                case 'xx':
+                    for (let x = 0; x < 20; x++) {
+                        for (let y = 0; y < 20; y++) {
+                            m.addMeshletAtPosition(new THREE.Vector3(x, 0, y))
+                        }
+                    }
+                case 'xxx':
+                    for (let x = 0; x < 10; x++) {
+                        for (let y = 0; y < 10; y++) {
+                            for (let z = 0; z < 10; z++) {
+                                m.addMeshletAtPosition(new THREE.Vector3(x, z, y))
+                            }
+                        }
+                    }
+                default:
+                    for (let x = 0; x < 20; x++) {
+                        for (let y = 0; y < 20; y++) {
+                            m.addMeshletAtPosition(new THREE.Vector3(x, 0, y))
+                        }
+                    }
             }
         })
     }
