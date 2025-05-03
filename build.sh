@@ -19,4 +19,6 @@ fi
 echo "Building nanite..."
 npm run build
 
-npm run serve
+if [ $? == '0' ]; then
+    npm run serve
+fi
