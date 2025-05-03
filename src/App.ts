@@ -66,7 +66,9 @@ export class App {
         this.gui.add(Config.get(), 'Layout', ['x', 'xx', 'xxx'])
             .onChange((value: string) => {
                 Config.get().Layout = value
-                location.reload()
+                if (!Config.get().DEBUG) {
+                    location.reload()
+                }
             })
         this.gui.add(Config.get(), 'Model', ['Dragon', 'Bunny', 'Teapot', 'Armadillo'])
             .onChange((value: string) => {
@@ -142,8 +144,8 @@ export class App {
             const objIndices = objMesh.indices
 
             // Original mesh
-            const xO = 0.3
-            const yO = -0.3
+            const xO = 1.0
+            const yO = -1.0
             const DEBUG = Config.get().DEBUG
 
             async function appendMeshlets(
@@ -299,24 +301,30 @@ export class App {
             traverse(rootMeshlet, m => allMeshlets.push(m))
             console.log("total meshlets", allMeshlets.length)
 
+            if (DEBUG) {
+                return
+            }
+
             const m = new MeshletObject3D(allMeshlets, this.lodStat)
             this.scene.add(m.mesh)
 
             switch (Config.getLayout()) {
                 case 'x':
-                    for (let x = 0; x < 20; x++) {
-                        for (let y = 0; y < 20; y++) {
-                            m.addMeshletAtPosition(new THREE.Vector3(x, 0, y))
-                        }
-                    }
+                case 'X':
+                    m.addMeshletAtPosition(new THREE.Vector3(0, 0, 0))
+                    break
 
                 case 'xx':
+                case 'XX':
                     for (let x = 0; x < 20; x++) {
                         for (let y = 0; y < 20; y++) {
                             m.addMeshletAtPosition(new THREE.Vector3(x, 0, y))
                         }
                     }
+                    break
+
                 case 'xxx':
+                case 'XXX':
                     for (let x = 0; x < 10; x++) {
                         for (let y = 0; y < 10; y++) {
                             for (let z = 0; z < 10; z++) {
@@ -324,12 +332,10 @@ export class App {
                             }
                         }
                     }
+                    break
+
                 default:
-                    for (let x = 0; x < 20; x++) {
-                        for (let y = 0; y < 20; y++) {
-                            m.addMeshletAtPosition(new THREE.Vector3(x, 0, y))
-                        }
-                    }
+                    m.addMeshletAtPosition(new THREE.Vector3(0, 0, 0))
             }
         })
     }
